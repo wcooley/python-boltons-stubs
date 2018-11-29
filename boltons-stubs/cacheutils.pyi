@@ -52,6 +52,7 @@ class CachedMethod:
     def __repr__(self) -> str: ...
 
 
+# TODO: Add Generic
 class LRI(dict):
     def __init__(self,
         max_size: int = ...,
@@ -65,6 +66,7 @@ class LRI(dict):
     ) -> None: ...
 
 
+# TODO: Add Generic
 class LRU:
     def __init__(
         self,
@@ -99,6 +101,7 @@ class LRU:
     def update(self, E: Union[List[Tuple[str, int]], LRU], **F: Any): ...
 
 
+# TODO: Add Generic
 class MinIDMap:
     def __init__(self) -> None: ...
     def get(self, a: Any) -> int: ...
