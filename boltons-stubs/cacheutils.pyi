@@ -3,38 +3,60 @@ import weakref
 from typing import (
     Any,
     Callable,
+    Dict,
+    FrozenSet,
     Generic,
+    Iterable,
     List,
+    Mapping,
+    MutableMapping,
     Optional,
     Tuple,
+    Type,
     TypeVar,
     Union,
 )
 
+KT = TypeVar('KT')
+VT = TypeVar('VT')
+T = TypeVar('T')
+
+FuncType = Callable[..., Any]
+
+CacheInitType = Union[
+        Callable[[], MutableMapping[KT, VT]],
+        MutableMapping[KT, VT],
+    ]
+
+MakeCacheKeyType = Callable[
+        [Iterable, Mapping, Any, FrozenSet[Type]],
+        _HashedKey,
+        ]
+
 
 def cached(
-    cache: Union[Callable, LRU],
+    cache: CacheInitType, 
     scoped: bool = ...,
     typed: bool = ...,
-    key: None = ...,
-) -> Callable: ...
+    key: Optional[MakeCacheKeyType] = ...,
+) -> Callable[..., Any]: ...
 
 
 def cachedmethod(
-        cache: Union[str, Callable],
+        cache: Union[CacheInitType, str],
         scoped: bool = ...,
         typed: bool = ...,
-        key: None = ...,
+        key: Optional[MakeCacheKeyType] = ...,
 ) -> Callable: ...
 
 
 class CachedFunction:
     def __init__(self,
-        func: Callable,
-        cache: Union[Callable, LRU],
+        func: FuncType,
+        cache: CacheInitType,
         scoped: bool = ...,
         typed: bool = ...,
-        key: None = ...,
+        key: Optional[MakeCacheKeyType] = ...,
     ) -> None: ...
     def __call__(self, *args: Any, **kwargs: Any) -> int: ...
     def __repr__(self) -> str: ...
@@ -43,81 +65,81 @@ class CachedFunction:
 class CachedMethod:
     def __init__(self,
         func: Callable,
-        cache: Union[Callable, str],
+        cache: Union[CacheInitType, str],
         scoped: bool = ...,
         typed: bool = ...,
-        key: Optional[Callable] = ...,
+        key: Optional[MakeCacheKeyType] = ...,
     ) -> None: ...
     def __call__(self, *args: Any, **kwargs: Any) -> None: ...
     def __repr__(self) -> str: ...
 
 
-# TODO: Add Generic
-class LRI(dict):
+class LRI(Dict[KT, VT]):
     def __init__(self,
         max_size: int = ...,
-        values: None = ...,
-        on_miss: Optional[Callable] = ...,
+        values: Optional[Union[Mapping[KT, VT], Iterable[Tuple[KT, VT]]]] = ...,
+        on_miss: Optional[Callable[[KT], VT]] = ...,
     ) -> None: ...
-    def __getitem__(self, key: Union[str, _HashedKey]) -> Optional[str]: ...
+    def __getitem__(self, key: KT) -> Optional[VT]: ...  # type: ignore
     def __setitem__(self,
-        key: Union[str, _HashedKey],
-        value: Optional[str],
+        key: KT,
+        value: VT,
     ) -> None: ...
 
 
-# TODO: Add Generic
-class LRU:
+class LRU(Dict[KT, VT]):
     def __init__(
         self,
         max_size: int = ...,
-        values: Optional[Union[LRU, List[Tuple[str, int]]]] = ...,
-        on_miss: None = ...,
+        values: Optional[Union[Mapping[KT, VT], Iterable[Tuple[KT, VT]]]] = ...,
+        on_miss: Optional[Callable[[KT], VT]] = ...,
     ) -> None: ...
-    def __getitem__(self, key: Union[str, _HashedKey]): ...
+    def __getitem__(self, key: KT) -> Optional[VT]: ...  # type: ignore
     def __setitem__(self,
-        key: Union[str, int, _HashedKey],
-        value: Optional[Union[int, str]]
+        key: KT,
+        value: VT,
     ) -> None: ...
-    def __delitem__(self, key: str) -> None: ...
-    def __eq__(self, other: LRU): ...  # type: ignore
+    def __delitem__(self, key: KT) -> None: ...
+    def __eq__(self, other: LRU) -> bool: ...  # type: ignore
     def __ne__(self, other: LRU) -> bool: ...  # type: ignore
     def __repr__(self) -> str: ...
-    def _get_link_and_move_to_front_of_ll(self, key: Union[str, int, _HashedKey]): ...
+    def _get_link_and_move_to_front_of_ll(self, key: KT) -> VT: ...
     def _init_ll(self) -> None: ...
-    def _remove_from_ll(self, key: str) -> None: ...
+    def _remove_from_ll(self, key: KT) -> None: ...
     def _set_key_and_add_to_front_of_ll(
         self,
-        key: Union[str, int, _HashedKey],
-        value: Optional[Union[str, int]]
+        key: KT,
+        value: VT,
     ) -> None: ...
-    def _set_key_and_evict_last_in_ll(self, key: Union[str, int], value: Union[str, int]) -> Union[str, int]: ...
+    def _set_key_and_evict_last_in_ll(self, key: KT, value: VT) -> VT: ...
     def clear(self) -> None: ...
     def copy(self) -> LRU: ...
-    def get(self, key: str, default: None = ...) -> None: ...
-    def pop(self, key: str, default: Any = ...): ...
-    def popitem(self): ...
-    def setdefault(self, key: str, default: Optional[int] = ...): ...
-    def update(self, E: Union[List[Tuple[str, int]], LRU], **F: Any): ...
+    def get(self, key: KT, default: Any = ...) -> Optional[VT]: ...  # type: ignore
+    def pop(self, key: KT, default: Any = ...) -> VT: ...
+    def popitem(self) -> Tuple[KT, VT]: ...
+    def setdefault(self,  # type: ignore
+        key: KT,
+        default: Optional[VT] = ...
+    ) -> Optional[VT]: ...
+    def update(self,  # type: ignore
+            E: Union[Mapping[KT, VT], Iterable[Tuple[KT, VT]]],
+            **F: Any
+    ) -> None: ...
 
 
-# TODO: Add Generic
-class MinIDMap:
+class MinIDMap(Generic[T]):
     def __init__(self) -> None: ...
-    def get(self, a: Any) -> int: ...
-    def drop(self, a: Any) -> None: ...
+    def get(self, a: T) -> int: ...
+    def drop(self, a: T) -> None: ...
     def _clean(self, ref: weakref.ref) -> None: ...
 
 
 class _HashedKey:
     def __hash__(self) -> int: ...
-    def __init__(self, key: List[str]) -> None: ...
+    def __init__(self, key: List[Any]) -> None: ...
 
 
-_CPT = TypeVar('_CPT')
-
-
-class cachedproperty(Generic[_CPT]):
-    def __init__(self, func: Callable[[Any], _CPT]) -> None: ...
+class cachedproperty(Generic[T]):
+    def __init__(self, func: Callable[[], T]) -> None: ...
     def __repr__(self) -> str: ...
-    def __get__(self, obj: Any, objtype: Optional[type]) -> _CPT: ...
+    def __get__(self, obj: Any, objtype: Optional[Type]) -> T: ...
