@@ -1,4 +1,6 @@
-from distutils.core import setup
+from __future__ import absolute_import, print_function
+
+from setuptools import setup
 import os
 
 
@@ -18,7 +20,10 @@ setup(
     author="Wil Cooley",
     author_email="wcooley@nakedape.cc",
     url="https://github.com/wcooley/python-boltons-stubs",
-    version="18.0.1",
+    version="18.0.1.0",
     package_data=find_stubs("boltons-stubs"),
     packages=["boltons-stubs"],
+    install_requires=[
+        "boltons==18.0.1",
+    ],
 )
