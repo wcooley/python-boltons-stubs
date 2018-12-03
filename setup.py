@@ -9,6 +9,8 @@ def find_stubs(package):
     stubs = []
     for root, dirs, files in os.walk(package):
         for f in files:
+            if not f.endswith('.pyi'):
+                continue
             path = os.path.join(root, f).replace(package + os.sep, '', 1)
             stubs.append(path)
     return {package: stubs}
