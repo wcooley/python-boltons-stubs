@@ -8,8 +8,8 @@ import os
 def find_stubs(package):
     stubs = []
     for root, dirs, files in os.walk(package):
-        for file in files:
-            path = os.path.join(root, file).replace(package + os.sep, '', 1)
+        for f in files:
+            path = os.path.join(root, f).replace(package + os.sep, '', 1)
             stubs.append(path)
     return {package: stubs}
 
