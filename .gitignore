@@ -1,0 +1,78 @@
+#
+# Local additions should go beneath the LOCAL_ADDITIONS_HERE marker
+# Cache/compiled
+*.py[cod]
+__pycache__/
+.*cache/
+
+# C extensions
+*.so
+
+# Packages/build related
+*.egg
+*.tar
+*.tar.gz
+*.tgz
+*.whl
+build/
+dist/
+downloads/
+# Sphinx
+_build/
+develop-eggs/
+*.egg-info/
+.eggs/
+eggs/
+parts/
+sdist/
+.installed.cfg
+
+bin/
+var/
+lib/
+lib64/
+*.log
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage related
+.tox/
+coverage/
+htmlcov/
+# temp files created by `pytest_testmon`
+.tmontmp
+.testmondata
+coverage*.xml
+# Coverage data files
+.coverage*
+!.coveragerc
+# pyenv local config
+.python-version
+
+nosetests.xml
+junit*.xml
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# JetBrains project setup
+.idea/
+
+# Temp editor/OS files
+*~
+.*.swp
+.DS_Store
+
+#
+# LOCAL_ADDITIONS_HERE
+#
