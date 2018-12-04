@@ -6,3 +6,13 @@ These have mostly been generated using
 [`pytest-monkeytype`](https://pypi.org/project/pytest-monkeytype/); as such,
 they are limited to what is tested by default with the types included in the
 tests and to what has been manually created.
+
+To install:
+```
+pip install --editable git+https://github.com/wcooley/python-boltons-stubs#egg=boltons-stubs
+```
+
+To do:
+* Add missing classes & functions.
+* Make parameter types as general as possible and return types as specific
+as necessary.
